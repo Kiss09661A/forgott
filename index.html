@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>小公主 16 歲生日快樂 💖</title>
+  
+  <!-- 字體與 Icon 引入 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --primary-gold: #e2b071;
+      --light-gold: #fce8cd;
+      --font-title: 'Cinzel', 'Noto Serif TC', serif;
+      --font-body: 'Noto Serif TC', serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body, html {
+      width: 100%;
+      height: 100%;
+      height: 100dvh;
+      overflow: hidden;
+      font-family: var(--font-body);
+      background-color: #000;
+      color: #fff;
+    }
+
+    /* 手機全螢幕 HH.png 背景適配 */
+    .bg-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      z-index: 1;
+      background-image: url('./HH.png');
+      background-size: cover;
+      background-position: center center;
+      background-repeat: no-repeat;
+    }
+
+    /* 手機端專屬主內容排版 */
+    .app-container {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      height: 100%;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 24px;
+      padding-top: calc(20px + env(safe-area-inset-top));
+      padding-bottom: calc(40px + env(safe-area-inset-bottom));
+      opacity: 0;
+      transform: translateY(15px);
+      transition: opacity 1s ease, transform 1s ease;
+    }
+
+    .app-container.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* 頂部懸浮音樂播放器（適配手機瀏海） */
+    .music-player {
+      position: fixed;
+      top: calc(12px + env(safe-area-inset-top));
+      right: 15px;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 215, 0, 0.4);
+      padding: 5px 12px 5px 6px;
+      border-radius: 30px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+      cursor: pointer;
+    }
+
+    .vinyl-record {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #222 30%, #111 70%, #d4af37 100%);
+      border: 1px solid #ffd700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: spin 4s linear infinite;
+      animation-play-state: paused;
+    }
+
+    .music-player.playing .vinyl-record {
+      animation-play-state: running;
+    }
+
+    .vinyl-record::after {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: #f4b2b0;
+      border-radius: 50%;
+    }
+
+    .music-text {
+      font-size: 0.7rem;
+      letter-spacing: 1px;
+      color: var(--light-gold);
+      font-weight: 600;
+    }
+
+    /* Hero 標題 */
+    .hero {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .crown-icon {
+      font-size: 1.8rem;
+      color: var(--primary-gold);
+      margin-bottom: 6px;
+      filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.9));
+      animation: float 3s ease-in-out infinite;
+    }
+
+    .hero-title {
+      font-family: var(--font-title);
+      font-size: 1.8rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #fff 0%, #fce8cd 50%, #e2b071 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 2px;
+      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.9));
+    }
+
+    /* 手機無框背景直打文字區塊 */
+    .letter-body {
+      width: 100%;
+      max-width: 340px;
+      font-size: 0.98rem;
+      line-height: 1.8;
+      color: #ffffff;
+      white-space: pre-line;
+      text-align: justify;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.98), 0 0 15px rgba(0, 0, 0, 0.9);
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 2px;
+      height: 1.1em;
+      background-color: var(--primary-gold);
+      vertical-align: middle;
+      animation: blink 0.8s infinite;
+      box-shadow: 0 0 6px var(--primary-gold);
+    }
+
+    /* 手機端拆禮物儀式 Cover Overlay */
+    .unboxing-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      z-index: 1000;
+      background: rgba(15, 10, 13, 0.95);
+      backdrop-filter: blur(20px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      transition: opacity 0.8s ease, visibility 0.8s ease;
+    }
+
+    .unboxing-overlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .gift-box {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      background: linear-gradient(135deg, #2a1b22, #1a1014);
+      border: 2px solid var(--primary-gold);
+      border-radius: 16px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 25px rgba(226, 176, 113, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      animation: pulse-glow 2s infinite alternate;
+    }
+
+    .gift-ribbon-v {
+      position: absolute;
+      width: 20px;
+      height: 100%;
+      background: linear-gradient(90deg, #e2b071, #fce8cd, #e2b071);
+    }
+
+    .gift-ribbon-h {
+      position: absolute;
+      width: 100%;
+      height: 20px;
+      background: linear-gradient(180deg, #e2b071, #fce8cd, #e2b071);
+    }
+
+    .gift-seal {
+      position: relative;
+      z-index: 2;
+      width: 44px;
+      height: 44px;
+      background: radial-gradient(circle, #f4b2b0, #e2b071);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #1a1014;
+      font-weight: 800;
+      font-size: 1rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      border: 2px solid #fff;
+    }
+
+    .unboxing-text {
+      margin-top: 24px;
+      font-size: 1rem;
+      color: var(--light-gold);
+      letter-spacing: 2px;
+      text-align: center;
+    }
+
+    .unboxing-sub {
+      margin-top: 6px;
+      font-size: 0.75rem;
+      color: #f4b2b0;
+    }
+
+    /* 動畫 Keyframes */
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    @keyframes pulse-glow {
+      0% { box-shadow: 0 15px 35px rgba(0,0,0,0.6), 0 0 15px rgba(226,176,113,0.2); }
+      100% { box-shadow: 0 15px 35px rgba(0,0,0,0.6), 0 0 35px rgba(226,176,113,0.6); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 手機全螢幕背景圖片 HH.png -->
+  <div class="bg-container"></div>
+
+  <!-- 背景音樂 (同目錄 agg.mp3) -->
+  <audio id="bg-music" loop preload="auto">
+    <source src="agg.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- 頂部懸浮音樂控制 -->
+  <div class="music-player" id="music-btn">
+    <div class="vinyl-record"></div>
+    <span class="music-text" id="music-status">MUSIC</span>
+  </div>
+
+  <!-- 開箱/拆禮物儀式層 -->
+  <div class="unboxing-overlay" id="unboxing-layer">
+    <div class="gift-box" id="gift-btn">
+      <div class="gift-ribbon-v"></div>
+      <div class="gift-ribbon-h"></div>
+      <div class="gift-seal">16</div>
+    </div>
+    <div class="unboxing-text">小公主的 16 歲專屬禮物</div>
+    <div class="unboxing-sub">輕觸解開絲帶，開啟驚喜 ✦</div>
+  </div>
+
+  <!-- 主頁面內容 -->
+  <div class="app-container" id="main-app">
+    
+    <!-- Hero 標題 -->
+    <header class="hero">
+      <div class="crown-icon"><i class="fa-solid fa-crown"></i></div>
+      <h1 class="hero-title">HAPPY BIRTHDAY</h1>
+    </header>
+
+    <!-- 背景直打文字區塊 -->
+    <div class="letter-body">
+      <span id="typed-text"></span><span class="cursor" id="cursor"></span>
+    </div>
+
+  </div>
+
+  <script>
+    // 告白文字內容
+    const messageText = `小公主，16歲生日快樂！
+
+之前的妳辛苦啦，之後的生日都會有一個傻逼男朋友陪妳過。
+
+我要把妳寵成小公主，雖然我不太會說好聽的話，但我會一直陪著妳、當妳的開心果。
+
+以後有任何壓力或想抱怨的事都跟我講，不可以自己扛，生日快樂喔！✨`;
+
+    // DOM 元素
+    const unboxingLayer = document.getElementById('unboxing-layer');
+    const giftBtn = document.getElementById('gift-btn');
+    const mainApp = document.getElementById('main-app');
+    const bgMusic = document.getElementById('bg-music');
+    const musicBtn = document.getElementById('music-btn');
+    const musicStatus = document.getElementById('music-status');
+    const typedTextEl = document.getElementById('typed-text');
+    const cursorEl = document.getElementById('cursor');
+
+    let isTypingStarted = false;
+
+    // 開箱拆禮物互動
+    giftBtn.addEventListener('click', () => {
+      unboxingLayer.classList.add('hidden');
+      mainApp.classList.add('visible');
+
+      playMusic();
+
+      if (!isTypingStarted) {
+        isTypingStarted = true;
+        setTimeout(startTyping, 500);
+      }
+    });
+
+    // 音樂控制
+    function playMusic() {
+      bgMusic.play().then(() => {
+        musicBtn.classList.add('playing');
+        musicStatus.textContent = 'PLAYING';
+      }).catch(() => {
+        musicStatus.textContent = 'PAUSED';
+      });
+    }
+
+    musicBtn.addEventListener('click', () => {
+      if (bgMusic.paused) {
+        playMusic();
+      } else {
+        bgMusic.pause();
+        musicBtn.classList.remove('playing');
+        musicStatus.textContent = 'PAUSED';
+      }
+    });
+
+    // 打字機效果
+    function startTyping() {
+      let index = 0;
+      typedTextEl.textContent = '';
+      
+      const timer = setInterval(() => {
+        if (index < messageText.length) {
+          typedTextEl.textContent += messageText.charAt(index);
+          index++;
+        } else {
+          clearInterval(timer);
+          cursorEl.style.display = 'none';
+        }
+      }, 60);
+    }
+  </script>
+</body>
+</html>
